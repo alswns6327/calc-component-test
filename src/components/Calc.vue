@@ -12,12 +12,20 @@
         <br/><br/>
         data4.x : <input type="text" v-model.number="data4.x"/>
         data4.result : <input type="text" v-model.number="data4.result"/>
+        <br/>
+
+        x2 : <input type="text" v-model.number="x2"/><br/>
+        y2 : <input type="text" v-model.number="y2"/>{{ result2 }}
+        <br/><br/>
+        x4 : <input type="text" v-model.number="x4"/><br/>
+        y4 : <input type="text" v-model.number="y4"/>{{ result4 }}
+        <button @click="watchBtn">watchBtn</button>
     </div>
 </template>
 
 <script>
 // import { computed } from '@vue/reactivity';
-import { computed, reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch, watchEffect } from 'vue';
 
     export default {
         name : "Calc",
@@ -42,7 +50,30 @@ import { computed, reactive, ref, watch } from 'vue';
                 console.log(`${c} ${c}`);
                 data4.result++;
             });
-            return {data,  result, clickBtn, data2, clickBtn2, data3, result3, testBtn, data4}
+
+            const x2 = ref(10);
+            const y2 = ref(20);
+            const result2 = ref(x2.value + y2.value);
+            watch([x2, y2], ([cx, cy], [ox, oy]) => {
+                console.log(`${cx} ${ox}`);
+                console.log(`${cy} ${oy}`);
+                result2.value = cx + cy;
+            });
+
+            const x4= ref(10);
+            const y4= ref(20);
+            const result4 = ref(0);
+
+            const watchFunc = watchEffect(()=>{
+                result4.value = x4.value + y4.value;
+                console.log(`${x4.value} ${y4.value}`);
+            });
+
+            const watchBtn = ()=>{
+                watchFunc();
+            }
+
+            return {data,  result, clickBtn, data2, clickBtn2, data3, result3, testBtn, data4, x2, y2, result2, x4, y4, result4, watchBtn}
 
             // return {
             //     x : ref(10),
